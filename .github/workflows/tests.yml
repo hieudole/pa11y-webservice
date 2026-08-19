@@ -27,8 +27,6 @@ jobs:
           - { node: 20, mongo: 6.0.11 }
           - { node: 20, mongo: 5.0.22 }
           - { node: 20, mongo: 4.4.25 }
-          - { node: 20, mongo: 3.6.23 }
-          - { node: 20, mongo: 2.6.12 }
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6

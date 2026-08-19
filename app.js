@@ -32,11 +32,7 @@ function initApp(config, callback) {
 	};
 
 	const client = new MongoClient(
-		config.database,
-		{
-			useNewUrlParser: true,
-			useUnifiedTopology: true
-		}
+		config.database
 	);
 
 	client.on('timeout', () => {
@@ -58,24 +54,29 @@ function initApp(config, callback) {
 	async.series(
 		[
 			next => {
-				client.connect(error => {
-					app.client = client;
-					app.db = client.db();
-
-					next(error);
-				});
+				client.connect()
+					.then(() => {
+						app.client = client;
+						app.db = client.db();
+						next();
+					})
+					.catch(next);
 			},
 			next => {
-				require('./model/result')(app, (error, model) => {
-					app.model.result = model;
-					next(error);
-				});
+				require('./model/result')(app)
+					.then(model => {
+						app.model.result = model;
+						next();
+					})
+					.catch(next);
 			},
 			next => {
-				require('./model/task')(app, (error, model) => {
-					app.model.task = model;
-					next(error);
-				});
+				require('./model/task')(app)
+					.then(model => {
+						app.model.task = model;
+						next();
+					})
+					.catch(next);
 			},
 			next => {
 				if (!config.dbOnly && process.env.NODE_ENV !== 'test') {

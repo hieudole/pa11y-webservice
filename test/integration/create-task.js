@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('proclaim');
-const {ObjectID} = require('mongodb');
+const {ObjectId} = require('mongodb');
 
 describe('POST /tasks', function() {
 
@@ -331,7 +331,7 @@ describe('POST /tasks', function() {
 
 		it('should add the new task to the database', async function() {
 			const task = await this.app.model.task.collection.findOne({
-				_id: new ObjectID(this.response.body.id)
+				_id: new ObjectId(this.response.body.id)
 			});
 			assert.isDefined(task);
 			assert.deepEqual(task.headers, newTask.headers);
@@ -375,7 +375,7 @@ describe('POST /tasks', function() {
 
 		it('should add the new task to the database', async function() {
 			const task = await this.app.model.task.collection.findOne({
-				_id: new ObjectID(this.response.body.id)
+				_id: new ObjectId(this.response.body.id)
 			});
 			assert.isDefined(task);
 			assert.deepEqual(task.headers, {

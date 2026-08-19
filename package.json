@@ -2,7 +2,7 @@
   "name": "pa11y-webservice",
   "version": "5.0.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19.0"
   },
   "description": "Pa11y Webservice provides scheduled accessibility reports for multiple URLs",
   "keywords": [
@@ -29,7 +29,7 @@
     "joi": "~18.0.2",
     "kleur": "~4.1.5",
     "lodash.groupby": "~4.6.0",
-    "mongodb": "~3.7.3",
+    "mongodb": "~7.5.0",
     "pa11y": "^9.1.1"
   },
   "devDependencies": {
