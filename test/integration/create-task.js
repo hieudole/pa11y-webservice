@@ -157,8 +157,37 @@ describe('POST /tasks', function() {
 			assert.strictEqual(this.response.body.url, newTask.url);
 			assert.strictEqual(this.response.body.standard, newTask.standard);
 			assert.deepEqual(this.response.body.ignore, []);
+			assert.deepEqual(this.response.body.runners, ['htmlcs']);
 		});
 
+	});
+
+	describe('with valid JSON and runners', function() {
+		let newTask;
+
+		beforeEach(async function() {
+			newTask = {
+				name: 'NPG Home',
+				url: 'nature.com',
+				standard: 'WCAG2AA',
+				runners: ['axe']
+			};
+			await this.navigate({
+				method: 'POST',
+				endpoint: 'tasks',
+				body: newTask
+			});
+		});
+
+		it('should persist the configured runners', async function() {
+			const task = await this.app.model.task.collection.findOne(newTask);
+			assert.isDefined(task);
+			assert.deepEqual(task.runners, newTask.runners);
+		});
+
+		it('should output the configured runners', function() {
+			assert.deepEqual(this.response.body.runners, newTask.runners);
+		});
 	});
 
 	describe('with valid JSON and wait time', function() {

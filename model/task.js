@@ -20,6 +20,8 @@ const {grey} = require('kleur');
 const {ObjectId} = require('mongodb');
 const pa11y = require('pa11y');
 
+const defaultRunners = ['htmlcs'];
+
 module.exports = async function(app) {
 	const collection = app.db.collection('tasks');
 	await collection.createIndex({
@@ -32,6 +34,7 @@ module.exports = async function(app) {
 		collection,
 
 		create(newTask) {
+			newTask.runners = model.normalizeRunners(newTask.runners);
 			newTask.headers = model.sanitizeHeaderInput(newTask.headers);
 
 			return model.collection.insertOne(newTask)
@@ -99,7 +102,10 @@ module.exports = async function(app) {
 				wait: parseInt(edits.wait, 10),
 				actions: edits.actions,
 				username: edits.username,
-				password: edits.password
+				password: edits.password,
+				...(edits.runners ? {
+					runners: model.normalizeRunners(edits.runners)
+				} : {})
 			};
 			if (edits.ignore) {
 				taskEdits.ignore = edits.ignore;
@@ -179,6 +185,7 @@ module.exports = async function(app) {
 			return model.getById(id).then(async task => {
 				const pa11yOptions = {
 					standard: task.standard,
+					runners: model.normalizeRunners(task.runners),
 					includeWarnings: true,
 					includeNotices: true,
 					timeout: (task.timeout || 30000),
@@ -212,6 +219,7 @@ module.exports = async function(app) {
 				const results = app.model.result.convertPa11y2Results(pa11yResults);
 				results.task = task.id;
 				results.ignore = task.ignore;
+				results.runners = pa11yOptions.runners;
 				const response = await app.model.result.create(results);
 				return response;
 			})
@@ -233,6 +241,7 @@ module.exports = async function(app) {
 				timeout: (task.timeout ? parseInt(task.timeout, 10) : 30000),
 				wait: (task.wait ? parseInt(task.wait, 10) : 0),
 				standard: task.standard,
+				runners: model.normalizeRunners(task.runners),
 				ignore: task.ignore || [],
 				actions: task.actions || []
 			};
@@ -261,6 +270,12 @@ module.exports = async function(app) {
 				}
 			}
 			return output;
+		},
+
+		normalizeRunners(runners) {
+			return Array.isArray(runners) && runners.length ?
+				runners.slice() :
+				defaultRunners.slice();
 		},
 
 		sanitizeHeaderInput(headers) {

@@ -18,6 +18,11 @@ const {green, grey, red} = require('kleur');
 const Joi = require('joi');
 const {isValidAction} = require('pa11y');
 
+const runnerSchema = Joi.array()
+	.items(Joi.string().valid('htmlcs', 'axe'))
+	.min(1)
+	.unique();
+
 module.exports = function({model, server}) {
 	server.route({
 		path: '/tasks/{taskId}',
@@ -89,6 +94,7 @@ module.exports = function({model, server}) {
 					comment: Joi.string(),
 					username: Joi.string().allow(''),
 					password: Joi.string().allow(''),
+					runners: runnerSchema,
 					hideElements: Joi.string().allow(''),
 					headers: [
 						Joi.string().allow(''),

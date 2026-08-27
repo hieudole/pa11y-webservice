@@ -18,6 +18,11 @@ const Joi = require('joi');
 const groupBy = require('lodash.groupby');
 const {isValidAction} = require('pa11y');
 
+const runnerSchema = Joi.array()
+	.items(Joi.string().valid('htmlcs', 'axe'))
+	.min(1)
+	.unique();
+
 module.exports = function(app) {
 	const {model, server} = app;
 
@@ -97,6 +102,7 @@ module.exports = function(app) {
 						'WCAG2AA',
 						'WCAG2AAA'
 					),
+					runners: runnerSchema.default(['htmlcs']),
 					ignore: Joi.array(),
 					actions: Joi.array().items(Joi.string()),
 					hideElements: Joi.string().allow(''),

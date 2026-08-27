@@ -35,6 +35,7 @@ describe('PATCH /tasks/{taskId}}', function() {
 						foo: 'bar'
 					},
 					hideElements: 'foo',
+					runners: ['axe'],
 					actions: [
 						'click element body'
 					],
@@ -86,6 +87,11 @@ describe('PATCH /tasks/{taskId}}', function() {
 			it('should update the task\'s actions in the database', async function() {
 				const task = await this.app.model.task.getById('abc000000000000000000001');
 				assert.deepEqual(task.actions, taskEdits.actions);
+			});
+
+			it('should update the task\'s runners in the database', async function() {
+				const task = await this.app.model.task.getById('abc000000000000000000001');
+				assert.deepEqual(task.runners, taskEdits.runners);
 			});
 
 			it('should add an annotation for the edit to the task', async function() {

@@ -169,6 +169,7 @@ module.exports = async function({db}) {
 				date: new Date(result.date).toISOString(),
 				count: result.count,
 				ignore: result.ignore || [],
+				runners: result.runners || [],
 				results: result.results || []
 			};
 		},
